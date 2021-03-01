@@ -2,15 +2,20 @@
   <div class="counter">
     <div>
       <div>
-        <div><h3>{{title}} </h3></div>
-          <div align="center">{{ parity }}</div>
-          <div class="priceBox">Update Count: {{ payload.id }}</div>
-          <div class="priceBox">USD: {{ payload.usd }}</div>
-          <div class="priceBox">EUR: {{ payload.eur }}</div>
-          <div class="priceBox">BTC: {{ payload.btc }}</div>
-          <div class="priceBox">ETH: {{ payload.eth }}</div>
-          <div class="priceBox">XRP: {{ payload.xrp }}</div>
-      </div>
+        <div class="priceBox">
+          <span class="valueBox" >Symbol</span>
+          <span class="valueBox">High</span>
+          <span class="valueBox">Low</span>
+          <span class="valueBox">Change</span>
+        </div>
+        <div class="priceBox" v-for="(item, index) in currencyList" v-bind:key="index">
+          <div v-if="payload[item]">
+          <span class="valueBox" >{{ payload[item].symbol}}</span>
+            <span class="valueBox">{{ payload[item].high}}</span>
+            <span class="valueBox">{{ payload[item].low}}</span>
+            <span class="valueBox">{{ payload[item].change}}</span>
+          </div>
+        </div>
     </div>
     <div align="center">
       <div>
@@ -20,12 +25,14 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 <script>
 
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
+
   name: "CurrentPrice",
   computed: {
     ...mapState("priceUSD", ["count","payload"]),
@@ -34,7 +41,12 @@ export default {
   created: function() {
     let self=this;
 
-    this.connection = new WebSocket("ws://localhost:8082")
+    this.connection = new WebSocket("ws://localhost:8083")
+
+    this.connection.addEventListener("open", ()=> {
+      this.connection.send(JSON.stringify({type: "add", symbols: self.currencyList.join()}));
+    })
+
 
     this.connection.onmessage = function(event) {
      self.onUpdatePayload(event.data);
@@ -56,6 +68,7 @@ export default {
     return {
       numberStore : [],
       title: 'Current Price USD ($)',
+      currencyList : ["btc","eth","xrp"],
     }
   }
 };
@@ -74,7 +87,16 @@ h1 {
 .priceBox{
   background-color: lightcyan;
   border: 1px solid;
-  padding: 10px;
   box-shadow: 5px 10px #888888;
+}
+
+.valueBox{
+  border-right: 1px solid darkblue;
+  margin-right: 20px;
+  padding-right: 20px;
+  min-width: 100px;
+  max-width: 100px;
+  width: 100px;
+  display: inline-block;
 }
 </style>

@@ -1,4 +1,5 @@
-let lastId = 0;
+//import { ref } from 'vue'
+//let lastId = 0;
 const state = {
   count: 0,
   payload: []
@@ -13,18 +14,10 @@ const actions = {
 };
 
 const mutations = {
-  updatePayload(state = [], payload) {
-    state.payload =
-     //   ...state.payload,
-      {
-        id: ++lastId,
-        usd: payload.usd,
-        eur: payload.eur,
-        btc: payload.btc,
-        eth: payload.eth,
-        xrp: payload.xrp,
-      };
-  }
+
+    updatePayload(state, payload) {
+        state.payload[payload.symbol] = payload;
+    }
 };
 
 export default {

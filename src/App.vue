@@ -4,7 +4,7 @@
      <div align="center"> </div>
       <div id="nav">
         <ul>
-      <li> <router-link to="/priceValues">Counter</router-link></li>
+      <li> <router-link to="/priceValues">Watchlist</router-link></li>
           <li>   <router-link to="/feedback">Feedback</router-link></li>
           <li>  <router-link to="/orderBook">OrderBook</router-link></li>
           <li class="logoContainer"><img class="logo" alt="Vue logo" src="./assets/vuex.png"></li>
