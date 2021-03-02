@@ -54,48 +54,23 @@ export default {
   },
   components: { Multiselect },
   created: function() {
-    let self=this;
-
-    this.connection = new WebSocket("ws://localhost:8083")
-
-    this.connection.addEventListener("open", ()=> {
-      this.connection.send(JSON.stringify({type: "add", symbols: self.currencyList.join()}));
-    })
-
-
-    this.connection.onmessage = function(event) {
-      self.onUpdatePayload(event.data);
-    }
   },
   methods: {
     ...mapActions("watchListX", [
-      "updatePayload"
+      "handleSubscription",
     ]),
 
-    onUpdatePayload(payload) {
-      this.updatePayload(JSON.parse(payload));
-    },
-    closeConnection() {
-      this.connection.close()
-    },
-    rerenderSymList(type, symbol) {
-      if(type === "add") {
-        this.currencyList.push(symbol)
-        this.connection.send(JSON.stringify({type: "add", symbols: symbol}));
-      } else if (type ==="remove") {
-        let index = this.currencyList.indexOf(symbol);
-        this.currencyList.splice(index,1);
-        this.connection.send(JSON.stringify({type: "remove", symbols: symbol}));
-      }
 
-    },
+
     selectItem(option) {
-      // window.alert( option.label);
-      this.rerenderSymList("add", option.label);
+      this.currencyList.push(option.label);
+      this.handleSubscription({type: "add", symbol:option.label});
     },
 
     removeItem(option) {
-      this.rerenderSymList("remove", option.label);
+       let index = this.currencyList.indexOf(option.label);
+      this.currencyList.splice(index,1);
+      this.handleSubscription({type: "remove", symbol:option.label});
     }
   },
   data()  {
@@ -104,7 +79,7 @@ export default {
       title: 'Watch List ($)',
       currencyList : [],
       SelectedValues: [],
-      options: ["btc","eth","xrp"]
+      options: ["btc","eth","xrp","ltc"]
     }
   }
 };

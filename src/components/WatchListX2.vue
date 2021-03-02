@@ -16,6 +16,7 @@
       <div>
         <div class="priceBox">
           <span class="valueBox" >Symbol</span>
+          <span class="valueBox">Open</span>
           <span class="valueBox">High</span>
           <span class="valueBox">Low</span>
           <span class="valueBox">Change</span>
@@ -23,6 +24,7 @@
         <div class="priceBox" v-for="(item, index) in currencyList" v-bind:key="index">
           <div v-if="payload[item]">
             <span class="valueBox" >{{ payload[item].symbol}}</span>
+            <span class="valueBox" >{{ payload[item].open}}</span>
             <span class="valueBox">{{ payload[item].high}}</span>
             <span class="valueBox">{{ payload[item].low}}</span>
             <span class="valueBox">{{ payload[item].change}}</span>
@@ -45,55 +47,46 @@ import { mapState, mapGetters, mapActions } from "vuex";
 import Multiselect from '@vueform/multiselect'
 export default {
 
-  name: "WatchListX2",
+  name: "WatchListX1",
   computed: {
     ...mapState("watchListX", ["count","payload"]),
     ...mapGetters("watchListX", ["parity"])
   },
   components: { Multiselect },
   created: function() {
-    let self=this;
-
-    this.connection = new WebSocket("ws://localhost:8083")
-
-    this.connection.addEventListener("open", ()=> {
-      this.connection.send(JSON.stringify({type: "add", symbols: self.currencyList.join()}));
-    })
-
-
-    this.connection.onmessage = function(event) {
-      self.onUpdatePayload(event.data);
-    }
+  //this.addlog()
   },
   methods: {
     ...mapActions("watchListX", [
-      "updatePayload"
+      "handleSubscription",
     ]),
+    // addlog() {
+    //   window.alert(this.payload['btc'].high);
+    //   if(this.payload['btc']) {
+    //     // eslint-disable-next-line no-unused-vars
+    //     let xxx = this.payload['btc'].high;
+    //     this.$watch(xxx, function (newVal, oldVal) {
+    //       let x =  this.payload['btc'];
+    //       let xx = "symbol" + x.symbol + " old open" + newVal.open+ " new open" + oldVal.open
+    //       window.alert(xx)
+    //
+    //       // do something
+    //     }, {
+    //       deep: true
+    //     })
+    //   }
+    // },
 
-    onUpdatePayload(payload) {
-      this.updatePayload(JSON.parse(payload));
-    },
-    closeConnection() {
-      this.connection.close()
-    },
-    rerenderSymList(type, symbol) {
-      if(type === "add") {
-      this.currencyList.push(symbol)
-      this.connection.send(JSON.stringify({type: "add", symbols: symbol}));
-      } else if (type ==="remove") {
-        let index = this.currencyList.indexOf(symbol);
-        this.currencyList.splice(index,1);
-        this.connection.send(JSON.stringify({type: "remove", symbols: symbol}));
-      }
-
-    },
     selectItem(option) {
-     // window.alert( option.label);
-      this.rerenderSymList("add", option.label);
+      window.alert( option.label);
+      this.currencyList.push(option.label);
+      this.handleSubscription({type: "add", symbol:option.label});
     },
 
     removeItem(option) {
-      this.rerenderSymList("remove", option.label);
+      let index = this.currencyList.indexOf(option.label);
+      this.currencyList.splice(index,1);
+      this.handleSubscription({type: "remove", symbol:option.label});
     }
   },
   data()  {
@@ -102,7 +95,7 @@ export default {
       title: 'Watch List ($)',
       currencyList : [],
       SelectedValues: [],
-      options: ["btc","eth","xrp"]
+      options: ["btc","eth","xrp", "ltc"]
     }
   }
 };

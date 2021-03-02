@@ -20,13 +20,26 @@
 <script>
 import watchListX1 from "./WatchListX1";
 import watchListX2 from "./WatchListX2";
+import {mapActions} from "vuex";
 export default {
   name: "watchListTab",
   components: {
     watchListX1,
     watchListX2
   },
+  computed: {
+
+  },
+  created() {
+    this.initCon();
+  },
   methods: {
+    ...mapActions("watchListX", [
+      "handleSubscription"
+    ]),
+    initCon() {
+      this.handleSubscription({type: "init", symbol:""});
+    },
     openTab(currencyName) {
       var i;
       var x = document.getElementsByClassName("city");
