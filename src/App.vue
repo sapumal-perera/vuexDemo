@@ -4,14 +4,16 @@
      <div align="center"> </div>
       <div id="nav">
         <ul>
-      <li> <router-link to="/priceValues">Watchlist</router-link></li>
+      <li> <router-link to="/watchLists">Watchlist</router-link></li>
+          <li>   <router-link to="/priceValues">priceValues</router-link></li>
           <li>   <router-link to="/feedback">Feedback</router-link></li>
           <li>  <router-link to="/orderBook">OrderBook</router-link></li>
           <li class="logoContainer"><img class="logo" alt="Vue logo" src="./assets/vuex.png"></li>
         </ul>
       </div>
-      <div class="component-container"></div>
+      <div class="component-container">
       <router-view />
+      </div>
     </div>
   </div>
 </template>
@@ -73,6 +75,7 @@ li a:hover:not(.active) {
 .component-container {
   margin: 5%;
   border: 1px solid #cccccc;
+  height: 100%;
 }
 
 </style>

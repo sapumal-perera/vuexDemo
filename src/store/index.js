@@ -1,5 +1,5 @@
 import Vuex from 'vuex';
-import priceUSD from './modules/priceUSD';
+import watchListX from './modules/wachlist-x';
 import priceBTC from './modules/priceBTC';
 import feedback from './modules/feedback';
 import account from './modules/account';
@@ -22,7 +22,7 @@ export default Vuex.createStore({
   },
 
   modules: {
-    priceUSD,
+      watchListX,
       priceBTC,
     feedback,
     account,

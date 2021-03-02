@@ -1,15 +1,11 @@
 let lastId = 0;
 const state = {
     count: 0,
-    id : 0,
-    usd : 0,
-    eur : 0,
-    eth : 0,
-    xrp:  0,
+    payload: []
 };
 
 const getters = {
-    parity: state => (state.usd > state.eur ? "Invest with USD" : "Invest with EUR")
+    parity: state => (state.payload.usd > state.payload.eur ? "Invest with USD" : "Invest with EUR")
 };
 
 const actions = {
@@ -17,14 +13,17 @@ const actions = {
 };
 
 const mutations = {
-    updatePayload(state, payload) {
-
-                    state.id = ++lastId;
-                    state.usd = payload.usd;
-                    state.eur = payload.eur;
-                    state.eth = payload.eth;
-                    state.xrp=  payload.xrp;
-
+    updatePayload(state = [], payload) {
+        state.payload =
+            //   ...state.payload,
+            {
+                id: ++lastId,
+                usd: payload.usd,
+                eur: payload.eur,
+                btc: payload.btc,
+                eth: payload.eth,
+                xrp: payload.xrp,
+            };
     }
 };
 

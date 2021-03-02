@@ -1,30 +1,30 @@
 <template>
-  <h5 class="w3-bar-item">Price values</h5>
+  <h5 class="w3-bar-item">Manage watchlists</h5>
   <div class="tab">
-    <button class="tablinks" v-on:click="openTab('Usd')">USD </button>
-    <button class="tablinks" v-on:click="openTab('Btc')">BTC </button>
+    <button class="tablinks" v-on:click="openTab('wtc1')">watchlist-x-1 </button>
+    <button class="tablinks" v-on:click="openTab('wtc2')">watchlist-x-2 </button>
   </div>
 
   <div style="margin-left:130px">
 
-    <div class="tabcontent city" id="Usd"  style="display:none">
-     <CurrentPriceUSD/>
+    <div class="tabcontent city" id="wtc1"  style="display:none">
+     <watchListX1/>
     </div>
 
-    <div id="Btc" class="tabcontent city" style="display:none">
-      <CurrentPriceBTC/>
+    <div id="wtc2" class="tabcontent city" style="display:none">
+      <watchListX2/>
     </div>
   </div>
 </template>
 
 <script>
-import CurrentPriceUSD from "./CurrentPriceUSD";
-import CurrentPriceBTC from "./CurrentPriceBTC";
+import watchListX1 from "./WatchListX1";
+import watchListX2 from "./WatchListX2";
 export default {
-  name: "PriceValues",
+  name: "watchListTab",
   components: {
-    CurrentPriceUSD,
-    CurrentPriceBTC
+    watchListX1,
+    watchListX2
   },
   methods: {
     openTab(currencyName) {

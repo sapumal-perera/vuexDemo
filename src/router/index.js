@@ -1,9 +1,15 @@
 import { createWebHistory, createRouter } from "vue-router";
-import PriceValues from "../components/PriceValues";
+import watchListTab from "../components/watchListTab";
+import PriceValues from "../components/PriceValues1";
 import CurrentPriceBTC from "../components/OrderBook";
 import Feedback from "../components/Feedback";
 
 const routes = [
+    {
+        path: "/watchLists",
+        name: "watchLists",
+        component: watchListTab,
+    },
     {
         path: "/priceValues",
         name: "priceValues",
