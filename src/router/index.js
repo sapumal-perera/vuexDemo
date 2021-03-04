@@ -1,4 +1,4 @@
-import { createWebHistory, createRouter } from "vue-router";
+import {createWebHistory, createRouter} from "vue-router";
 import watchListTab from "../components/watchListTab";
 import PriceValues from "../components/PriceValues1";
 import CurrentPriceBTC from "../components/OrderBook";

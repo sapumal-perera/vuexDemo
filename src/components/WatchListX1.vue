@@ -1,5 +1,6 @@
 <template>
   <div class="counter">
+    <h6>watchlist x-1</h6>
     <div class="selectBox">
       <Multiselect
           v-model="SelectedValues"
@@ -49,36 +50,114 @@ export default {
 
   name: "WatchListX1",
   computed: {
-    ...mapState("watchListX", ["count","payload"]),
-    ...mapGetters("watchListX", ["parity"])
+    ...mapState("watchListX", ["count", "payload"]),
+    ...mapGetters("watchListX", ["count"])
   },
   components: { Multiselect },
+
   created: function() {
+    this.connectionSuccess();
+    this.unwatch = this.$store.watch(
+        (state, getters) => getters.count,
+        (newValue, oldValue) => {
+         // window.alert('Updating from'+ (newValue));
+        //  window.alert(`Updating from ${oldValue} to ${newValue}`);
+
+          if (newValue === 'success' || oldValue) {
+            this.complex = {
+              deep: '',
+            };
+          }
+        },
+    );
+
+    /**
+     * Subscribe for mutations in store
+     */
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+    //  window.alert('Updating from'+ (mutation.type));
+      if (mutation.type === 'watchListX/handleSubscription') {
+        console.log(`handleSubscription`);
+
+        if (state.status === 'success') {
+          this.complex = {
+            deep: 'some deep object',
+          };
+        }
+      }
+    });
+
+    /**
+     * Subscribe for actions in store
+     */
+    this.unsubscribe = this.$store.subscribeAction((action, state) => {
+     // window.alert('Updating action'+ (JSON.stringify(state)));
+      if (action.type === 'updateStatus') {
+        console.log(`Updating to ${state.status}`);
+
+        // Do whatever makes sense now
+        if (state.status === 'success') {
+          this.complex = {
+            deep: 'some deep object',
+          };
+        }
+      }
+    });
   },
   methods: {
     ...mapActions("watchListX", [
       "handleSubscription",
     ]),
-
-
-
     selectItem(option) {
       this.currencyList.push(option.label);
       this.handleSubscription({type: "add", symbol:option.label});
     },
-
     removeItem(option) {
        let index = this.currencyList.indexOf(option.label);
       this.currencyList.splice(index,1);
       this.handleSubscription({type: "remove", symbol:option.label});
-    }
+    },
+
+    /**
+     * vm.watch from vue
+     */
+    connectionSuccess () {
+      let self=this;
+        self.$watch('count', function (newVal, oldVal) {
+         // window.alert(""+newVal);
+          if(newVal > oldVal) {
+            //window.alert(newVal);
+          } else if(oldVal > newVal) {
+            //window.alert("oldVal");
+          }
+          // do something
+        }, {
+          deep: true,
+          immediate:false
+        })
+      }
+
   },
+  watch: {
+    payload(newValue, oldValue) {
+     window.alert(`Updating from ${oldValue} to ${newValue}`);
+
+      if (newValue === 'success') {
+        this.complex = {
+          deep: 'some deep object',
+        };
+      }
+    }
+    },
+
+
   data()  {
     return {
       numberStore : [],
       title: 'Watch List ($)',
       currencyList : [],
       SelectedValues: [],
+      countx: 0,
       options: ["btc","eth","xrp","ltc"]
     }
   }

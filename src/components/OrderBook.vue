@@ -1,5 +1,5 @@
 <template>
-<div>data</div>
+<div>This page is under construction!</div>
 </template>
 
 <script>

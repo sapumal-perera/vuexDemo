@@ -1,6 +1,6 @@
 <template>
   <div class="counter">
-    <h6>watchlist x-2</h6>
+    <h6>watchlist y-1</h6>
     <div class="selectBox">
       <Multiselect
           v-model="SelectedValues"
@@ -22,13 +22,13 @@
           <span class="valueBox">Low</span>
           <span class="valueBox">Change</span>
         </div>
-        <div class="priceBox" v-for="(item, index) in currencyList" v-bind:key="index">
-          <div v-if="payload[item]">
-            <span class="valueBox" >{{ payload[item].symbol}}</span>
-            <span class="valueBox" >{{ payload[item].open}}</span>
-            <span class="valueBox">{{ payload[item].high}}</span>
-            <span class="valueBox">{{ payload[item].low}}</span>
-            <span class="valueBox">{{ payload[item].change}}</span>
+        <div class="priceBox" v-for="(item, index) in currencyListLocal" v-bind:key="index">
+          <div v-if="item">
+            <span class="valueBox" >{{ item.symbol}}</span>
+            <span class="valueBox" >{{ item.open}}</span>
+            <span class="valueBox">{{ item.high}}</span>
+            <span class="valueBox">{{ item.low}}</span>
+            <span class="valueBox">{{ item.change}}</span>
           </div>
         </div>
       </div>
@@ -48,39 +48,61 @@ import { mapState, mapGetters, mapActions } from "vuex";
 import Multiselect from '@vueform/multiselect'
 export default {
 
-  name: "WatchListX1",
+  name: "WatchListY1",
   computed: {
-    ...mapState("watchListX", ["count","payload"]),
-    ...mapGetters("watchListX", ["parity"])
+    ...mapState("watchListY", ['usd']),
+    ...mapGetters("watchListY", ["parity"]),
+
+    // settings() {
+    //   return this.currencyListLocal;
+    // }
   },
   components: { Multiselect },
   created: function() {
-  //this.addlog()
+    this.initCon();
   },
   methods: {
-    ...mapActions("watchListX", [
+    ...mapActions("watchListY", [
       "handleSubscription",
     ]),
+    initCon() {
+     // this.handleSubscription({type: "init", symbol:""});
+    },
 
 
     selectItem(option) {
-      this.currencyList.push(option.label);
+      this.currencyListLocal.push(option.label);
       this.handleSubscription({type: "add", symbol:option.label});
     },
 
     removeItem(option) {
-      let index = this.currencyList.indexOf(option.label);
-      this.currencyList.splice(index,1);
+      let index = this.currencyListLocal.indexOf(option.label);
+      this.currencyListLocal.splice(index,1);
       this.handleSubscription({type: "remove", symbol:option.label});
+    },
+    watchStateChange () {
+      let self=this;
+      let currencies = ['usd', 'eur', 'eth', 'xrp'];
+      for(let currency of currencies) {
+        self.$watch(currency, function (newVal, oldVal) {
+
+          if(newVal.high > oldVal.high) {
+          window.alert(newVal.symbol);
+          }
+          // do something
+        }, {
+          deep: true
+        })
+      }
     }
   },
   data()  {
     return {
       numberStore : [],
       title: 'Watch List ($)',
-      currencyList : [],
+      currencyListLocal : [],
       SelectedValues: [],
-      options: ["btc","eth","xrp", "ltc"]
+      options: ["btc","eth","xrp","ltc"]
     }
   }
 };
